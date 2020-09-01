@@ -69,10 +69,10 @@
 
             update();
 
-            $prefix.on('change', update);
-            $customPrefix.on('keyup', generateAndUpdate);
-            $task.on('keyup', generateAndUpdate);
-            $copy.on('click', copy);
+            $prefix.on("change", update);
+            $customPrefix.on("change keyup", generateAndUpdate);
+            $task.on("keyup", generateAndUpdate);
+            $copy.on("click", copy);
 
             function update() {
                 $customPrefix.val($prefix.val());
@@ -82,7 +82,7 @@
             function copy() {
                 $branch.focus();
                 $branch.select();
-                document.execCommand('copy');
+                document.execCommand("copy");
             };
 
             function generateAndUpdate() {
