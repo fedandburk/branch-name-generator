@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta name="content" charset="utf-8" />
+    <title>Branch Name Generator</title>
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap.min.css" />
+    <script type="text/javascript" src="vendor/jquery.slim.min.js"></script>
+    <script type="text/javascript" src="vendor/underscore.min.js"></script>
+    <style>
+        .div-padding {
+             margin-top:10px;
+        }
+   </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Branch Name Generator</h1>
+                <p>Generates a git branch name from the given task name.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
+                    <label for="prefix">Prefix</label>
+                    <select id="prefix" class="form-control">
+                        <option value="feature" selected>Feature</option>
+                        <option value="bug">Bug</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <div class="form-group">
+                    <label for="custom_prefix">Custom Prefix</label>
+                    <input type="text" id="custom_prefix" class="form-control" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <label for="task">Task</label>
+                    <textarea type="text" id="task" autofocus="autofocus" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
+                <label for="branch">Branch</label>
+                <textarea id="branch" readonly="readonly" class="form-control"></textarea>
+            </div>
+        </div>
+        <div class="div-padding"></div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12">
+                <button type="submit" class="btn btn-primary" id="copy">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function() {
+            var $prefix = $("#prefix");
+            var $customPrefix = $("#custom_prefix");
+            var $task = $("#task");
+            var $branch = $("#branch");
+            var $copy = $("#copy");
+
+            update();
+
+            $prefix.on('change', update);
+            $customPrefix.on('keyup', generateAndUpdate);
+            $task.on('keyup', generateAndUpdate);
+            $copy.on('click', copy);
+
+            function update() {
+                $customPrefix.val($prefix.val());
+                generateAndUpdate();
+            };
+
+            function copy() {
+                $branch.focus();
+                $branch.select();
+                document.execCommand('copy');
+            };
+
+            function generateAndUpdate() {
+                $branch.val(generate($task.val(), $customPrefix.val()));
+            };
+
+            function generate(task, prefix) {
+                if (task === undefined || task === "") {
+                    return "";
+                }
+
+                // Replace non-word characters with '-'.
+                var branch = task.replace(/([\W])/g, "-");
+
+                // Remove duplicated '-'.
+                branch = branch.replace(/-+/g, "-");
+
+                // Replace uppercase characters with lovercase characters.
+                branch = branch.toLowerCase();
+
+                // Remove first '-'.
+                if (branch[0] === "-") {
+                    branch = branch.substring(1, branch.length);
+                }
+
+                // Remove last '-'.
+                if (branch[branch.length - 1] === "-") {
+                    branch = branch.substring(0, branch.length - 1);
+                }
+
+                if (prefix !== undefined && prefix !== "") {
+                    // Add tack type folder.
+                    branch = prefix + "/" + branch;
+                }
+
+                return branch;
+            };
+        }());
+    </script>
+</body>
+</html>
