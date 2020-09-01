@@ -70,7 +70,7 @@
             update();
 
             $prefix.on("change", update);
-            $customPrefix.on("change keyup", generateAndUpdate);
+            $customPrefix.on("keyup", generateAndUpdate);
             $task.on("keyup", generateAndUpdate);
             $copy.on("click", copy);
 
