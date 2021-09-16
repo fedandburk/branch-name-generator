@@ -32,6 +32,12 @@
             </div>
             <div class="col-xs-12 col-sm-3">
                 <div class="form-group">
+                    <label for="version">Version</label>
+                    <input type="text"  placeholder="1.0.0" id="version" class="form-control" />
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
                     <label for="prefix">Prefix</label>
                     <select id="prefix" class="form-control">
                         <option value="" selected>None</option>
@@ -40,10 +46,10 @@
                     </select>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-6">
+            <div class="col-xs-12 col-sm-3">
                 <div class="form-group">
                     <label for="custom_prefix">Custom prefix</label>
-                    <input type="text" id="custom_prefix" class="form-control" />
+                    <input type="text" placeholder="task" id="custom_prefix" class="form-control" />
                 </div>
             </div>
         </div>
@@ -72,6 +78,7 @@
     <script type="text/javascript">
         (function() {
             var $divider = $("#divider");
+            var $version = $("#version");
             var $prefix = $("#prefix");
             var $customPrefix = $("#custom_prefix");
             var $task = $("#task");
@@ -81,6 +88,7 @@
             update();
 
             $divider.on("change", update);
+            $version.on("keyup", generateAndUpdate);
             $prefix.on("change", update);
             $customPrefix.on("keyup", generateAndUpdate);
             $task.on("keyup", generateAndUpdate);
@@ -98,10 +106,10 @@
             };
 
             function generateAndUpdate() {
-                $branch.val(generate($task.val(), $customPrefix.val(), $divider.val()));
+                $branch.val(generate($task.val(), $customPrefix.val(), $divider.val(), $version.val()));
             };
 
-            function generate(task, prefix, divider) {
+            function generate(task, prefix, divider, version) {
                 if (task === undefined || task === "") {
                     return "";
                 }
@@ -132,6 +140,11 @@
                 if (prefix !== undefined && prefix !== "") {
                     // Add tack type folder.
                     branch = prefix + "/" + branch;
+                }
+
+                if (version !== undefined && version !== "") {
+                    // Add version folder.
+                    branch = version + "/" + branch;
                 }
 
                 return branch;
