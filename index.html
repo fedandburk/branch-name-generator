@@ -17,10 +17,19 @@
         <div class="row">
             <div class="col-xs-12">
                 <h1>Branch Name Generator</h1>
-                <p>Generates a git branch name from the given task name.</p>
+                <p>Generates a git branch name from a given task name.</p>
             </div>
         </div>
         <div class="row">
+            <div class="col-xs-12 col-sm-3">
+                <div class="form-group">
+                    <label for="divider">Divider</label>
+                    <select id="divider" class="form-control">
+                        <option value="-">Dash (-)</option>
+                        <option value="_">Underscore (_)</option>
+                    </select>
+                </div>
+            </div>
             <div class="col-xs-12 col-sm-3">
                 <div class="form-group">
                     <label for="prefix">Prefix</label>
@@ -31,9 +40,9 @@
                     </select>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-9">
+            <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="custom_prefix">Custom Prefix</label>
+                    <label for="custom_prefix">Custom prefix</label>
                     <input type="text" id="custom_prefix" class="form-control" />
                 </div>
             </div>
@@ -62,6 +71,7 @@
 
     <script type="text/javascript">
         (function() {
+            var $divider = $("#divider");
             var $prefix = $("#prefix");
             var $customPrefix = $("#custom_prefix");
             var $task = $("#task");
@@ -70,6 +80,7 @@
 
             update();
 
+            $divider.on("change", update);
             $prefix.on("change", update);
             $customPrefix.on("keyup", generateAndUpdate);
             $task.on("keyup", generateAndUpdate);
@@ -87,30 +98,34 @@
             };
 
             function generateAndUpdate() {
-                $branch.val(generate($task.val(), $customPrefix.val()));
+                $branch.val(generate($task.val(), $customPrefix.val(), $divider.val()));
             };
 
-            function generate(task, prefix) {
+            function generate(task, prefix, divider) {
                 if (task === undefined || task === "") {
                     return "";
                 }
 
-                // Replace non-word characters with '-'.
-                var branch = task.replace(/([\W])/g, "-");
+                // Replace non-word characters with divider.
+                var branch = task.replace(/([\W])/g, divider);
 
-                // Remove duplicated '-'.
-                branch = branch.replace(/-+/g, "-");
+                // Remove duplicated dividers.
+                if (divider == "-") {
+                    branch = branch.replace(/-+/g, divider);
+                } else {
+                    branch = branch.replace(/_+/g, divider);
+                }
 
                 // Replace uppercase characters with lovercase characters.
                 branch = branch.toLowerCase();
 
-                // Remove first '-'.
-                if (branch[0] === "-") {
+                // Remove first divider.
+                if (branch[0] === divider) {
                     branch = branch.substring(1, branch.length);
                 }
 
-                // Remove last '-'.
-                if (branch[branch.length - 1] === "-") {
+                // Remove last divider.
+                if (branch[branch.length - 1] === divider) {
                     branch = branch.substring(0, branch.length - 1);
                 }
 
